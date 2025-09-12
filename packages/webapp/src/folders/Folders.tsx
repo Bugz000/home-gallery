@@ -48,11 +48,19 @@ function withBase(url: string): string {
 /* ============================================================   THUMBNAIL   ============================================================ */
 function getThumbnail(entry: any): string | undefined {
   if (!Array.isArray(entry.previews) || !entry.previews.length) return undefined;
-  const last = entry.previews[entry.previews.length - 1];
-  const base = withBase(`./files/${last}`);
+  function extractPreviewSize(filename: string): number {
+    const match = filename.match(/preview-(\d+)\./);
+    return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+  }
+  const sorted = [...entry.previews].sort(
+    (a, b) => extractPreviewSize(a) - extractPreviewSize(b)
+  );
+  const smallest = sorted[0] || entry.previews[0];
+  const base = withBase(`./files/${smallest}`);
   const { protocol, host } = window.location;
   return `${protocol}//${host}${base}`;
 }
+
 
 /* ============================================================   FILTERS   ============================================================ */
 function buildFilters(entries: any[]): { root: string[]; map: FolderMap } {
@@ -83,8 +91,6 @@ function buildFilters(entries: any[]): { root: string[]; map: FolderMap } {
   }
 
   const filtersRoot = ensureNode("Filters", "Filters");
-
-  /* -------------------------- Cameras (Make/Model) -------------------------- */
   const makeDisplayByKey = new Map<string, string>();
   const modelDisplayByKey = new Map<string, string>();
 
@@ -123,25 +129,6 @@ function buildFilters(entries: any[]): { root: string[]; map: FolderMap } {
     }
   });
 
-  /* -------------------------- Tags -------------------------- */
-  const tagsRoot = ensureNode("Tags", "Filters/Tags", filtersRoot.path);
-
-  entries.forEach((entry) => {
-    const tags: string[] = entry.tags || [];
-    tags.forEach((tag) => {
-      const tagTrimmed = tag.trim();
-      if (!tagTrimmed) return;
-
-      const tagKey = tagTrimmed.toUpperCase();
-      const tagPath = `Filters/Tags/${tagKey}`;
-      const tagNode = ensureNode(tagTrimmed, tagPath, tagsRoot.path);
-
-      tagNode.filterQuery = `tag:"${encodeURIComponent(tagTrimmed)}"`;
-      tagNode.images++;
-      if (map[tagsRoot.path]) map[tagsRoot.path].images++;
-    });
-  });
-
   return { root, map };
 }
 
@@ -156,7 +143,7 @@ function buildFolderIndex(entries: any[]): { root: string[]; map: FolderMap } {
     }
     return map[path];
   }
-	console.log(entries)
+
   entries.forEach((entry) => {
     const thumbnail = getThumbnail(entry);
 

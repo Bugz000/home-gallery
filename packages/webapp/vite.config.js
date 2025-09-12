@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import pwaConditionalPlugin from './pwa-conditional-plugin.js'
 
 const proxyTarget = 'http://localhost:3000';
 const serverUrls = [
@@ -28,9 +27,8 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'logo192.png', 'logo512.png', 'logo.svg'],
+        includeAssets: ['favicon.ico', 'robots.txt', 'logo192.png', 'logo512.png', 'logo.svg'],
         manifest: {
-          id: '/',
           name: 'HomeGallery App',
           short_name: 'HomeGallery',
           description: 'All personal photos in your pocket',
@@ -62,12 +60,8 @@ export default defineConfig(() => {
               sizes: '512x512'
             }
           ]
-        },
-        workbox: {
-          navigateFallbackDenylist: [/\/api\//, /\/files\//],
         }
-      }),
-      pwaConditionalPlugin({ disabled: false }),
+      })
     ],
     resolve: {
       extensions: ['.ts', '.tsx']
