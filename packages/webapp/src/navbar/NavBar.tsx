@@ -12,7 +12,6 @@ import { EditNavBar } from './EditNavBar';
 import { NavItem } from './NavItem';
 import { ViewNavBar } from './ViewNavBar';
 import { SearchInput, SearchButton } from "./SearchInput";
-import { useAppConfig } from "../utils/useAppConfig";
 
 export const DesktopNavBar = ({disableEdit = false, showDialog}) => {
   const viewMode = useEditModeStore(state => state.viewMode);
@@ -22,7 +21,7 @@ export const DesktopNavBar = ({disableEdit = false, showDialog}) => {
       <nav className="sticky top-0 z-10 bg-gray-800">
         <div className="mx-auto">
           <div className="relative flex items-center justify-between h-12">
-            <div className="flex px-2 space-x-2 overflow-x-visible items-center">
+            <div className="flex px-2 space-x-2 overflow-x-visible">
               { viewMode === ViewMode.VIEW && (
                 <ViewNavBar disableEdit={disableEdit}/>
               )}
@@ -51,7 +50,7 @@ export const MobileNavBar = ({disableEdit = false, showDialog}) => {
           <div className="relative flex items-center justify-between h-12">
             { !showSearch && (
               <>
-                <div className="flex px-2 space-x-2 overflow-x-visible items-center">
+                <div className="flex px-2 space-x-2 overflow-x-visible">
                   { viewMode === ViewMode.VIEW && (
                     <ViewNavBar disableEdit={disableEdit}/>
                   )}

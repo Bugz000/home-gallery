@@ -11,26 +11,25 @@ export const MediaViewImage = (props) => {
   const imgRect = useClientRect(imgRef);
   const [faceRects, setFaceRects] = useState([]);
   const [objectRects, setObjectRects] = useState([]);
-  const { showAnnotations, hqZoom = false, zoomFactor = 1 } = props;
-  const { id, shortId, previews, faces, objects, fullSize } = props.media;
+  const { showAnnotations } = props;
+  const { id, shortId, previews, faces, objects } = props.media;
   const navigate = useNavigate();
   const previewSize = usePreviewSize()
+
   const smallUrl = getLowerPreviewUrl(previews, previewSize / 4)
-  const highPreviewUrl = getHigherPreviewUrl(previews, previewSize)
-  const maxPreviewUrl = getHigherPreviewUrl(previews, Number.MAX_SAFE_INTEGER)
-  const [src, setSrc] = useState(smallUrl)
+  const largeUrl = getHigherPreviewUrl(previews, previewSize)
+  const [src, setSrc] = useState('');
 
   useEffect(() => {
-    let selectedUrl = highPreviewUrl;
-    if (hqZoom && zoomFactor > 1) {
-      selectedUrl = fullSize || maxPreviewUrl;
+    if (!largeUrl) {
+      return
     }
-    if (!selectedUrl || selectedUrl === src) return;
-    //console.log("HQzoom:", hqZoom, "zoomFactor:", zoomFactor, "fullSize:", fullSize, "selected:", selectedUrl)
     const img = new Image();
-    img.onload = () => setSrc(selectedUrl);
-    img.src = selectedUrl;
-  }, [hqZoom, zoomFactor, fullSize, highPreviewUrl, maxPreviewUrl, src]);
+    img.addEventListener('load', () => {
+      setSrc(largeUrl);
+    });
+    img.src = largeUrl;
+  }, []);
 
   const selectFace = (shortId, faceNo) => {
     console.log(`Search for face ${faceNo} of ${shortId}`);

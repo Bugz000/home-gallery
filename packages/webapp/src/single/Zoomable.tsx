@@ -21,11 +21,10 @@ const containsSize = (containerWidth, containerHeight, childWidth, childHeight) 
 type ZoomableProps = {
   childWidth: number;
   childHeight: number;
-  onSwipe?: (ev: HammerInput) => void;
-  onZoom?: (scale: number) => void;
+  onSwipe?: (ev: HammerInput) => void
 }
 
-export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHeight, onSwipe, onZoom, children}) => {
+export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHeight, onSwipe, children}) => {
   const ref = useRef<HTMLDivElement>();
   const [style, setStyle] = useState({});
   const clientRect = useClientRect(ref);
@@ -92,7 +91,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
 
       logEvent(ev);
       requestElementUpdate();
-	  if (onZoom) onZoom(transform.scale); 
     }
 
     let onPinchHandler = (ev) => {
@@ -104,7 +102,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
 
       logEvent(ev);
       requestElementUpdate();
-	  if (onZoom) onZoom(transform.scale); 
     }
 
     const onSwipeHandler = (ev) => {
@@ -136,7 +133,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
       }
       logEvent(ev);
       requestElementUpdate();
-	  if (onZoom) onZoom(transform.scale); 
     }
 
     resetElement();
@@ -176,7 +172,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
 
       logEvent(ev);
       requestElementUpdate();
-	  if (onZoom) onZoom(transform.scale); 
     }
 
     el.addEventListener('wheel', onWheel)
