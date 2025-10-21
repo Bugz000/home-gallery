@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json",
+  "title": "WebappConfig",
+  "description": "gallery configuration for webapp module",
+  "type": "object",
+  "properties": {
+    "webapp": {
+      "title": "AppConfig",
+      "description": "Configuration for webapp module",
+      "type": "object",
+      "properties": {
+        "pluginManager": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.pluginManager",
+          "title": "PluginManager",
+          "type": "object",
+          "properties": {
+            "plugins": {
+              "title": "PluginUrls",
+              "description": "List of plugin urls to load",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          }
+        },
+        "disabled": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.disabled",
+          "title": "FeatureFlags",
+          "description": "List of feature flags to disable. By default all features are enabled.\n\nThe feature flags can also be disabled by query param 'disabled'",
+          "default": [],
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "description": "Flags for edition tags",
+                "enum": [
+                  "serverEvents",
+                  "events",
+                  "edit"
+                ]
+              },
+              {
+                "description": "Disable database loading and use embedded entries only",
+                "enum": [
+                  "database"
+                ]
+              },
+              {
+                "description": "Enable progressive web application support",
+                "enum": [
+                  "pwa"
+                ]
+              },
+              {
+                "description": "Recommended performance features. Disable them on local dev issues",
+                "enum": [
+                  "offlineDatabase",
+                  "worker"
+                ]
+              },
+              {
+                "type": "string",
+                "minLength": 0
+              }
+            ]
+          }
+        },
+        "sources": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.sources",
+          "title": "MediaSources",
+          "description": "List of downloadable media sources. This list will be injected from the server",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "downloadable": {
+                "type": "boolean",
+                "default": false
+              },
+              "indexName": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "pages": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.pages",
+          "title": "Pages",
+          "description": "Customize pages",
+          "default": [],
+          "type": "object",
+          "properties": {
+            "disabled": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "edit",
+                      "date",
+                      "video",
+                      "map",
+                      "tag"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "minLength": 0
+                  }
+                ]
+              }
+            },
+            "mediaView": {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.pages.mediaView",
+              "title": "MediaViewPage",
+              "description": "Customize single media view",
+              "default": [],
+              "type": "object",
+              "properties": {
+                "disabled": {
+                  "title": "MediaViewDisableFlags",
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "detail",
+                          "map",
+                          "similar",
+                          "annotation",
+                          "edit"
+                        ]
+                      },
+                      {
+                        "description": "Disables navigation to overview, prev and next",
+                        "enum": [
+                          "nav"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

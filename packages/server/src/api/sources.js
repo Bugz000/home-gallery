@@ -6,12 +6,13 @@ import express from 'express'
 import Logger from '@home-gallery/logger'
 import { sendError } from './error/index.js'
 
-const log = Logger('server.sources')
+const log = Logger('server.api.sources')
 
 const staticConfig = {index: false, maxAge: '2h'}
 
-export function getSourcesApi(config) {
-  /** @type {{ndex: string, dir: string, offline?: boolean, downloadable?: boolean}[]} */
+export async function sourcesApi(context) {
+  const { config, router } = context
+  /** @type {{index: string, dir: string, offline?: boolean, downloadable?: boolean}[]} */
   const sources = config.sources || []
 
   const downloadableSources = sources
@@ -22,21 +23,25 @@ export function getSourcesApi(config) {
       return {indexName, dir}
     })
 
+  if (downloadableSources.length) {
+    log.info(`Enable downloadable sources from indices: ${downloadableSources.map(s => s.indexName).join(', ')}`)
+  }
+
   const indexNameToDir = downloadableSources.reduce((result, {indexName, dir}) => {
     result[indexName] = dir
     return result
   }, {})
 
-  const router = express.Router()
-  router.get('/', (_, res) => {
+  const sourcesRouter = express.Router()
+  sourcesRouter.get('/', (_, res) => {
     res.json({
       data: downloadableSources.map(({indexName}) => ({indexName, downloadable: true}))
     })
   })
 
-  router.use('/', createStaticIndex(indexNameToDir))
+  sourcesRouter.use('/', createStaticIndex(indexNameToDir))
 
-  return router
+  router.use('/api/sources', sourcesRouter)
 }
 
 function createStaticIndex(indexNameToDir) {

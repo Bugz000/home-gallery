@@ -21,8 +21,9 @@ const containsSize = (containerWidth, containerHeight, childWidth, childHeight) 
 type ZoomableProps = {
   childWidth: number;
   childHeight: number;
-  onSwipe?: (ev: HammerInput) => void;
-  onZoom?: (scale: number) => void;
+  onSwipe?: (ev: HammerInput) => void
+  onZoom?: (zoomFactor: number) => void
+  children: React.ReactElement
 }
 
 export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHeight, onSwipe, onZoom, children}) => {
@@ -54,11 +55,12 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
         translate: { x: 0, y: 0 },
         scale: 1,
       };
+      onZoom?.(1)
       requestElementUpdate();
     }
 
     const updateElementTransform = () => {
-      const scale = Math.min(5, Math.max(1, transform.scale));
+      const scale = Math.min(10, Math.max(1, transform.scale));
 
       const maxX = Math.max(0, (scale * childContainsWidth - clientRect.width) / 2);
       const maxY = Math.max(0, (scale * childContainsHeight - clientRect.height) / 2);
@@ -69,6 +71,7 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
       setStyle(style => {
         return {...style, ...{transform: cssTransform}}
       });
+      onZoom?.(scale)
       ticking = false;
     }
 
@@ -100,7 +103,7 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
         initScale = transform.scale || 1;
       }
 
-      transform.scale = Math.min(5, Math.max(1, initScale * ev.scale));
+      transform.scale = Math.min(10, Math.max(1, initScale * ev.scale));
 
       logEvent(ev);
       requestElementUpdate();
@@ -164,8 +167,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
       }
     });
 
-    console.log('init layoutEffect');
-
     const onWheel = (ev) => {
       if (transform.scale == 1 && !ev.shiftKey) {
         return
@@ -185,7 +186,6 @@ export const Zoomable: FunctionComponent<ZoomableProps> = ({childWidth, childHei
     el.addEventListener('mousedown', onMouseDown, false)
 
     return () => {
-      console.log('reset layoutEffect');
       el.removeEventListener('wheel', onWheel)
       el.removeEventListener('mousedown', onMouseDown)
       if (!mc) {

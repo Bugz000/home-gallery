@@ -7,7 +7,7 @@ import { eventBus, fetchAll } from '../api/ApiService';
 import { createOfflineDatabase } from '../offline';
 import { useEntryStore } from '../store/entry-store';
 import { toNativeFactory } from '../utils/to-worker';
-import { useAppConfig } from '../utils/useAppConfig';
+import { useAppConfig } from '../config/useAppConfig';
 import { useOnEntries } from './useOnEntries';
 import { toAbsoluteUrl } from '../utils/toAbsoluteUrl';
 
@@ -18,7 +18,11 @@ export const useLoadDatabase = () => {
   const onEntries = useOnEntries()
 
   useEffect(() => {
-    onEntries(appConfig.entries)
+    onEntries(appConfig.entries as [] || [])
+
+    if (appConfig.disabled?.includes('database')) {
+      return
+    }
 
     const onDatabaseReloaded = cb => {
       eventBus.addEventListener('server', event => {
@@ -67,7 +71,7 @@ export const useLoadDatabase = () => {
     }
 
 
-    if (appConfig.disabledOfflineDatabase) {
+    if (appConfig.disabled?.includes('offlineDatabase')) {
       console.log('Feature offline database is disabled')
       loadLegacyDatabase()
     } else {

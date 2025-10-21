@@ -1,17 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "allowJs": true,
-    "checkJs": true,
-    "noImplicitAny": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "target": "es2022",
-    "allowSyntheticDefaultImports": true,
+
+    "noImplicitAny": false
   },
-  "emitDeclarationOnly": true,
-  "skipLibCheck": true,
   "include": ["src"],
-  "exclude": ["**/*.test.ts"]
 }

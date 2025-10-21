@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useAppConfig } from "../utils/useAppConfig";
+import { useAppConfig } from "../config/useAppConfig";
 type TAppLoadingProps = {
   isLoading: boolean
   hasError: boolean
@@ -50,10 +50,10 @@ export const AppLoading : React.FC<{state: TAppLoadingProps}> = ({state}) => {
   const appConfig = useAppConfig();
 
   useEffect(() => {
-    if (appConfig.siteTitle) {
-      document.title = appConfig.siteTitle;
+    if (appConfig.title) {
+      document.title = appConfig.title;
     }
-  }, [appConfig.siteTitle]);
+  }, []);
 
   return (
     <div id="app-loader">

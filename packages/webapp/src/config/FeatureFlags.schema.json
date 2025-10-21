@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/xemle/home-gallery/master/gallery.config.schema.json#webapp.disabled",
+  "title": "FeatureFlags",
+  "description": "List of feature flags to disable. By default all features are enabled.\n\nThe feature flags can also be disabled by query param 'disabled'",
+  "default": [],
+  "type": "array",
+  "items": {
+    "anyOf": [
+      {
+        "description": "Flags for edition tags",
+        "enum": ["serverEvents", "events", "edit"]
+      },
+      {
+        "description": "Disable database loading and use embedded entries only",
+        "enum": ["database"]
+      },
+      {
+        "description": "Enable progressive web application support",
+        "enum": ["pwa"]
+      },
+      {
+        "description": "Recommended performance features. Disable them on local dev issues",
+        "enum": ["offlineDatabase", "worker"]
+      },
+      { "type": "string", "minLength": 0 }
+    ]
+  }
+}

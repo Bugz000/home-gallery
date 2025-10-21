@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useEventStore } from '../store/event-store'
 import { getEvents, eventStream, eventBus } from '../api/ApiService';
-import { useAppConfig } from '../utils/useAppConfig'
+import { useAppConfig } from '../config/useAppConfig'
 
 export const useLoadEvents = () => {
   const addEvents = useEventStore(state => state.addEvents);
@@ -16,12 +16,14 @@ export const useLoadEvents = () => {
       })
     eventBus.addEventListener('userAction', event => addEvents([event]))
 
-    if (appConfig.disabledServerEvents) {
-      console.log('Feature event stream is disabled')
-    } else {
+    if (!appConfig.disabled?.includes('serverEvents')) {
       eventStream()
+    } else {
+      console.log('Feature event stream is disabled')
     }
 
-    fetchEvents()
+    if (!appConfig.disabled?.includes('events')) {
+      fetchEvents()
+    }
   }, [])
 }

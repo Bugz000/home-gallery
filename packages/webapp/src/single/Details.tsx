@@ -1,28 +1,30 @@
+import * as icons from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from "react";
-import { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import * as icons from '@fortawesome/free-solid-svg-icons'
 
-import { humanizeDuration, humanizeBytes, formatDate } from "../utils/format";
-import { useTagDialog } from "../dialog/use-tag-dialog";
 import { addTags } from '../api/ApiService';
-import { Tag } from "../api/models";
-import { useAppConfig } from "../utils/useAppConfig";
+import { type Tag } from "../api/models";
+import { useAppConfig } from "../config/useAppConfig";
+import { useTagDialog } from "../dialog/use-tag-dialog";
+import type { Entry } from "../store/entry";
 import { classNames } from "../utils/class-names";
+import { formatDate, humanizeBytes, humanizeDuration } from "../utils/format";
+import { MediaViewDisableFlags } from "./MediaViewPage";
 
-export const Details = ({entry, dispatch}) => {
+export const Details = ({entry, dispatch}: {entry: Entry, dispatch: any}) => {
   const appConfig = useAppConfig()
+  const disabledFlags = appConfig.pages?.mediaView?.disabled || [] as MediaViewDisableFlags
   const {openDialog, setDialogVisible} = useTagDialog()
 
   if (!entry) {
     return (<></>)
   }
 
-  const dispatchSearch = (query) => {
+  const dispatchSearch = (query: string) => {
     dispatch({type: 'search', query})
   }
 
-  const escapeSearchValue = value => /[\s+]/.test(value) ? `"${value}"` : value
+  const escapeSearchValue = (value: string) => /[\s+]/.test(value) ? `"${value}"` : value
 
   const queryTerm = (key, value, op?) => {
     let query
@@ -126,6 +128,16 @@ export const Details = ({entry, dispatch}) => {
     openDialog({initialTags: origTags, onSubmit})
   }
 
+  function copyShareUrlToClipboard(e) {
+    e.preventDefault();
+    navigator.clipboard.writeText(getShareUrl());
+  }
+
+  function getShareUrl() {
+    const url = new URL("../../share/" + entry.shortId, window.location.href);
+    return url.toString();
+  }
+
   return (
     <>
       <div className="p-4">
@@ -179,7 +191,7 @@ export const Details = ({entry, dispatch}) => {
               ))}
             </div>
           </div>
-          { (hasAddress(entry) || hasGeo(entry)) && (
+          { !disabledFlags.includes('map') && (hasAddress(entry) || hasGeo(entry)) && (
             <div className="flex">
               <div className="flex-shrink-0 w-8">
                 <FontAwesomeIcon icon={icons.faMapPin} className="text-gray-300"/>
@@ -221,7 +233,7 @@ export const Details = ({entry, dispatch}) => {
                 {entry.tags.map(tag => (
                   <a className="px-2 py-1 text-gray-300 bg-gray-800 rounded hover:bg-gray-700 hover:text-gray-200 hover:cursor-pointer" onClick={() => dispatchSearch(`${queryTerm("tag", tag)}`)} title={`Search for tag ${tag}`}>{tag}</a>
                 ))}
-                {!appConfig.disabledEdit && (
+                {!disabledFlags.includes('edit') && (
                   <a className="flex items-center gap-2 px-2 py-1 text-gray-500 bg-transparent border border-gray-700 rounded group inset-1 hover:bg-gray-700 hover:text-gray-200 hover:cursor-pointer active:bg-gray-600" onClick={editTags} title={`Edit single tags`}>
                     <FontAwesomeIcon icon={icons.faPen} className="text-gray-500 group-hover:text-gray-300"/>
                     <span>Edit tags</span>
@@ -251,7 +263,7 @@ export const Details = ({entry, dispatch}) => {
               <p>ISO {entry.iso}, Aperture {entry.aperture}, Shutter Speed {entry.ShutterSpeedRaw}, Focal Length {entry.focalLength}mm</p>
             </div>
           </div>
-          {entry.objects?.length > 0 && (
+          { !disabledFlags.includes('annotation') && entry.objects?.length > 0 && (
             <div className="flex">
               <div className="flex-shrink-0 w-8">
                 <FontAwesomeIcon icon={icons.faShapes} className="text-gray-300"/>
@@ -263,7 +275,7 @@ export const Details = ({entry, dispatch}) => {
               </div>
             </div>
           )}
-          {entry.faces?.length > 0 && (
+          { !disabledFlags.includes('annotation') && !!entry.faces && entry.faces.length > 0 && (
             <div className="flex">
               <div className="flex-shrink-0 w-8">
                 <FontAwesomeIcon icon={icons.faUser} className="text-gray-300"/>
@@ -275,6 +287,18 @@ export const Details = ({entry, dispatch}) => {
               </div>
             </div>
           )}
+          <div className="flex">
+            <div className="flex-shrink-0 w-8">
+              <FontAwesomeIcon icon={icons.faShareNodes} className="text-gray-300"/>
+            </div>
+            <div>
+              <p className="inline-flex flex-wrap gap-2">
+                  <a className="flex items-center gap-2 px-1 py-0 text-gray-500 bg-transparent border border-gray-700 rounded group inset-1 hover:bg-gray-700 hover:text-gray-200 hover:cursor-pointer active:bg-gray-600" onClick={copyShareUrlToClipboard} href={getShareUrl()} title={`Click to copy shareable link to clipboard`}>
+                    <span>Share media</span>
+                  </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>

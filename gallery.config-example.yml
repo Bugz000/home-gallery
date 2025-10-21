@@ -150,6 +150,8 @@ sources:
   # security configuration for https
   # key: '{configDir}/server.key'
   # cert: '{configDir}/server.crt'
+  # The public URL of the gallery instance
+  # publicUrl: https://acme.com/gallery
   # Open browser when server starts
   #openBrowser: true
   # Enable basic authentication users and ip whitelist rules which require no authentication
@@ -192,13 +194,25 @@ sources:
 # Webapp configuration
 #
 #webapp:
+  # Site title
+  #title: 'Home Gallery'
   # Disabled webapp features
   #disabled:
+    ## feature flags
     #- edit
     #- serverEvents
     #- pwa
     #- offlineDatabase
     #- worker
+    ## UI flags
+    #- yearsPage
+    #- videosPage
+    #- similarPage
+    #- facesPage
+    #- tagsPage
+    #- mapPage
+    #- editPage
+    #- detailPage
 
 #
 # Plugin settings

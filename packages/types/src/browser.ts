@@ -1,15 +1,11 @@
-import { TPluginManager } from "./plugin"
-import { TQueryContext, TQueryPlugin } from "./query"
+import { TPluginManager } from "./plugin.js"
+import { TQueryContext } from "./query.js"
 
 export type TBrowserPlugin = {
   name: string
   version: string
   requires?: string[]
-  initialize: (manager: TPluginManager) => Promise<TBrowserModuleFactory>
-}
-
-export type TBrowserModuleFactory = {
-  getQueryPlugins?: () => Promise<TQueryPlugin[]>
+  initialize: (manager: TPluginManager) => Promise<void>
 }
 
 export type TBrowserPluginManager = TPluginManager & {

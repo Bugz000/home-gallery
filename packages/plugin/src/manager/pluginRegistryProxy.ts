@@ -1,6 +1,6 @@
 import { TGalleryPluginManager, TPlugin } from "@home-gallery/types";
 
-import { ExtensionRegistry } from "./extensionRegistry";
+import { ExtensionRegistry } from "./extensionRegistry.js";
 
 export function proxyRegisterForPlugin(manager: TGalleryPluginManager, registry: ExtensionRegistry, plugin: TPlugin) {
   return new Proxy(manager, {
@@ -9,12 +9,13 @@ export function proxyRegisterForPlugin(manager: TGalleryPluginManager, registry:
         return Reflect.get(target, prop)
       }
 
-      return new Proxy(target[prop], {
-        apply(_target, _thisArg, args) {
-          const [type, extension] = args
-          return registry.register(plugin, type, extension)
-        }
-      })
+      return async function(...args: any[]) {
+        const [type, extension] = args
+        // Always return a promise that catches sync and async errors
+        return (async () => {
+          return await registry.register(plugin, type, extension)
+        })()
+      }
     }
   })
 }

@@ -11,11 +11,9 @@
     "dist"
   ],
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist *.tsbuildinfo",
     "build": "dev-cli build",
-    "test": "tap",
-    "watch": "onchange \"src/**\" -- npm run build",
-    "watch:test": "tap repl w"
+    "watch": "dev-cli build --watch"
   },
   "keywords": [
     "HomeGallery",
@@ -33,9 +31,9 @@
     "@home-gallery/fetch": "file:../fetch",
     "@home-gallery/logger": "file:../logger",
     "castv2-client": "^1.2.0",
-    "express": "^4.17.1",
-    "http-proxy-middleware": "^2.0.3",
-    "multicast-dns": "^7.2.3"
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
+    "multicast-dns": "^7.2.5"
   },
   "devDependencies": {
     "@home-gallery/dev-tools": "file:../dev-tools"
