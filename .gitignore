@@ -13,5 +13,5 @@ package-lock.json
 package-lock.json.cache
 gallery.config.yml
 latest-e2e
+*.tsbuildinfo
 brun.sh
-.brun.sh.swp
