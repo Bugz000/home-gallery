@@ -74,6 +74,12 @@ export const ViewNavBar = ({disableEdit}) => {
       action: () => navigate('/map', {state: {listLocation}}),
       hidden: appConfig.pages?.disabled?.includes('map'),
     },
+    {
+      icon: icons.faFolder,
+      text: 'Folders',
+      action: () => navigate('/folders'),
+      disabled: false,
+    },
   ]
   
   return (

@@ -15,6 +15,7 @@ import { Tags } from './tags/Tags';
 import { Map } from './map';
 import { MediaView } from './single/MediaView';
 import { useAppConfig } from "./config/useAppConfig";
+import { Folders } from './folders/Folders';
 
 export const AppRoutes = () => {
   const appConfig = useAppConfig();
@@ -25,7 +26,7 @@ export const AppRoutes = () => {
       <Route path="/view/:id" element={<MediaView />} />
       <Route path="/share/:id" element={<MediaView />} />
       <Route path="/search/:term" element={<SearchView />} />
-
+      <Route path="/folders" element={<Folders />} />
       {/* Optional pages routes */}
       {!appConfig.pages?.disabled?.includes('date') && <Route path="/years" element={<Years />} />}
       {!appConfig.pages?.disabled?.includes('date') && <Route path="/years/:year" element={<YearView />} />}
